@@ -24,3 +24,12 @@ func ExecuteQuery(db *sql.DB, query string){
     }
     q.Close()
 }
+
+func GetResult(db *sql.DB, query string) *sql.Rows{
+	rows, err := db.Query(query)
+    if err != nil {
+        panic(err.Error())
+    }
+
+    return rows
+}
