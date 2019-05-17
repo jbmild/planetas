@@ -2,9 +2,8 @@ package main
 
 import (
 	"./Models"
-    "database/sql"
-   	_ "github.com/go-sql-driver/mysql"
    	"fmt"
+    "./Utils"
 )
 
 func main() {
@@ -12,32 +11,21 @@ func main() {
 	dayFractionCount := 1 //This is set to seconds, but it could be any fraction qty
 
 	//Connect to database
-	db, err := sql.Open("mysql", "root:glamit10@tcp(127.0.0.1:3306)/planets")
-	if err != nil {
-        panic(err.Error())
-    }
+	db := Utils.GetConnection("root", "glamit10", "127.0.0.1", "3306", "planets")
 
-    defer db.Close()
+
 
     //Drop table
-    drop, err := db.Query("DROP TABLE IF EXISTS forecasts")
-    if err != nil {
-        panic(err.Error())
-    }
-    drop.Close()
+    Utils.ExecuteQuery(db, "DROP TABLE IF EXISTS forecasts")
 
     //Create table
-    create, err := db.Query("CREATE TABLE forecasts (" +
+    Utils.ExecuteQuery(db, "CREATE TABLE forecasts (" +
                                 "day int(10) unsigned NOT NULL," +
                                 "drought int(10) unsigned NOT NULL," +
                                 "optimal_weather int(10) unsigned NOT NULL," +
                                 "rainy int(10) unsigned NOT NULL," +
                                 "UNIQUE KEY day_unique (day)" +
                               ") ENGINE=InnoDB")
-    if err != nil {
-        panic(err.Error())
-    }
-    create.Close()
 
 	var ss Models.SolarSystem
 	ss.Initialize(dayFractionCount, false)
@@ -50,11 +38,9 @@ func main() {
 	 	fc := ss.GetForecastOfNextDay()
 
 	 	t := fmt.Sprintf("INSERT INTO forecasts (day, drought, optimal_weather, rainy) VALUES (%d, %d, %d, %d)", fc.Day, fc.Drought, fc.OptimalWeather, fc.Rainy)
-
-	 	insert, err := db.Query(t)
-	    if err != nil {
-	        panic(err.Error())
-	    }
-	    insert.Close()
+        Utils.ExecuteQuery(db, t)
 	}	
+
+
+    db.Close()
 }

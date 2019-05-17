@@ -12,7 +12,7 @@ func main() {
 	acDrought, acOptimalWeather, acRainy := 0, 0, 0
 
 	var ss Models.SolarSystem
-	ss.Initialize(dayFractionCount, true)
+	ss.Initialize(dayFractionCount, false)
 
 	ss.AddPlanet(&Models.Planet{"Vulcano", 1000, 5, 0})
 	ss.AddPlanet(&Models.Planet{"Ferengi", 500, -1, 0})
@@ -25,9 +25,9 @@ func main() {
 		acRainy += fc.Rainy
 	}
 
-	fmt.Println("Periodos de sequia", acDrought)
-	fmt.Println("Periodos con condiciones optimas", acOptimalWeather)
-	fmt.Println("Periodos de lluvia", acRainy)
+	fmt.Println("Períodos de sequía", acDrought)
+	fmt.Println("Períodos con condiciones óptimas", acOptimalWeather)
+	fmt.Println("Períodos de lluvia", acRainy)
 	if ss.GetDayMaxRainIntensity() > -1{
 		fmt.Println("El dia con mayor lluvia fue el ", ss.GetDayMaxRainIntensity())
 	}
