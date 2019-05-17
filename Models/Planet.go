@@ -22,9 +22,9 @@ func (p *Planet) GetCartesianPosition() *CartesianPosition{
 	return &pos
 }
 
-func (p *Planet) Move(){
+func (p *Planet) MoveOneFraction(dayFractionCount int){
 
-	p.AnglePosition += p.AngularSpeed
+	p.AnglePosition += p.AngularSpeed / float64(dayFractionCount)
 	if Utils.Abs(p.AnglePosition) >= 360{
 		if p.AnglePosition > 0{
 			p.AnglePosition -= 360

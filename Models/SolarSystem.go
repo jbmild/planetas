@@ -2,16 +2,22 @@ package Models
 
 import (
 	"../Utils"
+	"math"
 )
 
 type SolarSystem struct {
- 	planets 			map[int] *Planet 
- 	stardate 			int `default:0`
- 	maxRainIntensity 	float64 `default:-1`
- 	dayMaxRainIntensity	int `default:-1`
+ 	planets 					map[int] *Planet 
+ 	stardate 					int `default:0`
+ 	maxRainIntensity 			float64 `default:-1`
+ 	stardateMaxRainIntensity	int `default:-1`
+ 	currentForecast				Forecast
+ 	dayFractionCount			int `default:1`
+ 	hasMemory					bool
 }
 
-func (ss *SolarSystem) Initialize(){
+func (ss *SolarSystem) Initialize(dfc int, memory bool){
+	ss.hasMemory = memory
+	ss.dayFractionCount = dfc
 	ss.planets = make(map[int] *Planet)
 }
 
@@ -19,34 +25,64 @@ func (ss *SolarSystem) AddPlanet(p *Planet){
 	ss.planets[len(ss.planets)] = p
 }
 
-func(ss *SolarSystem) MoveOneDay(){
+func(ss *SolarSystem) moveOneFraction(){
 	ss.stardate++
 	for i:=0; i<len(ss.planets); i++ {
-		ss.planets[i].Move()
+		ss.planets[i].MoveOneFraction(ss.dayFractionCount)
 	}
 }
 
 func(ss *SolarSystem) GetDayMaxRainIntensity() int{
-	return ss.dayMaxRainIntensity
+	return int(math.Floor(float64(ss.stardateMaxRainIntensity/ss.dayFractionCount)))
 }
 
-func(ss *SolarSystem) GetForecast() Forecast{
-	var fc Forecast
+func(ss *SolarSystem) GetForecastOfNextDay() Forecast{
+	var dayForecast Forecast
+	dayForecast.Day = int(math.Floor(float64(ss.stardate/ss.dayFractionCount)))
 
 	if len(ss.planets)!=3{
 		panic("El sistema solar debe tener 3 planetas")
 	}
 
-	fc.Drought = ss.drought()
-	fc.OptimalWeather = ss.optimalWeather()
-	fc.Rainy = ss.rainy()
-	
-	if fc.Rainy{
+	previusForecast := ss.currentForecast
+
+	for s:=0; s<ss.dayFractionCount; s++{
+		ss.currentForecast = ss.getForecastOfFraction()
+
+		if ss.hasMemory {
+			if !ss.currentForecast.Equals(previusForecast){
+				dayForecast.Drought += previusForecast.Drought 
+				dayForecast.OptimalWeather += previusForecast.OptimalWeather
+				dayForecast.Rainy += previusForecast.Rainy
+
+				previusForecast = ss.currentForecast
+			}
+		}else{
+			dayForecast.Drought += previusForecast.Drought 
+			dayForecast.OptimalWeather += previusForecast.OptimalWeather
+			dayForecast.Rainy += previusForecast.Rainy
+
+			previusForecast = ss.currentForecast
+		}
+
+		ss.moveOneFraction()
+	}
+
+	return dayForecast
+}
+func (ss *SolarSystem) getForecastOfFraction() Forecast{
+	var fc Forecast
+
+	if ss.drought() { fc.Drought++ }
+	if ss.optimalWeather() { fc.OptimalWeather++ }
+	if ss.rainy() { fc.Rainy++ }
+
+	if fc.Rainy == 1 {
 		intensity := ss.getRainIntensity()
 
 		if ss.maxRainIntensity < intensity{
 			ss.maxRainIntensity = intensity
-			ss.dayMaxRainIntensity = ss.stardate
+			ss.stardateMaxRainIntensity = ss.stardate
 		}
 	}
 
