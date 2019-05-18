@@ -14,7 +14,7 @@ func main() {
 	r := gin.Default()
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"message": "Bienvenido al pronóstico de la universo. ¿Como podemos ayudarte?",
+			"message": "Bienvenido al pronóstico del universo. ¿Como podemos ayudarte?",
 		})
 	})
 	r.GET("/ping", func(c *gin.Context) {
