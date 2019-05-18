@@ -17,6 +17,8 @@ La api, posee 4 servicios principales
 	* Vacía la base de datos para que el job que calcula los próximos 10 años pueda volverse a correr.
 	> {"message":"La información se borro correctamente."}
 
+Dentro del repositorio, se encuentra un archivo llamado "10yearanalysis.go", dicho archivo, puede utilizarse para ejecutar la primera parte de este ejercicio desde la consola.
+
 # Posibles mejoras
 
 Estas son algunas ideas mediante las cuales se podría mejorar el código y funcionalidades.
