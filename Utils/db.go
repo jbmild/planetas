@@ -17,19 +17,11 @@ func GetConnection(user string, password string, host string, port string, datab
     return db
 }
 
-func ExecuteQuery(db *sql.DB, query string){
+func ExecuteQuery(db *sql.DB, query string) bool{
 	q, err := db.Query(query)
     if err != nil {
-        panic(err.Error())
+        return false
     }
     q.Close()
-}
-
-func GetResult(db *sql.DB, query string) *sql.Rows{
-	rows, err := db.Query(query)
-    if err != nil {
-        panic(err.Error())
-    }
-
-    return rows
+    return true
 }
