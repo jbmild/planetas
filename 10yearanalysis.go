@@ -1,4 +1,4 @@
-package main
+/*package main
 
 import (
 	"./Models"
@@ -32,4 +32,4 @@ func main() {
 		fmt.Println("El dia con mayor lluvia fue el ", ss.GetDayMaxRainIntensity())
 	}
 	
-}
+}*/
