@@ -2,6 +2,7 @@
 
 Para poder correr el código localmente, es necesario tener instalado go, git y las siguientes dependencias:
 > go get -u github.com/go-sql-driver/mysql
+
 > go get -u github.com/gin-gonic/gin
 
 # Ejecución
