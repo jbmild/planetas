@@ -44,7 +44,7 @@ func answerWeatherOfDay(c *gin.Context) {
 
     //day := 5
 
-	db := Utils.GetConnection("root", "glamit10", "127.0.0.1", "3306", "planets")
+	db := Utils.GetConnection("root", "", "127.0.0.1", "3306", "planets")
 
 	query := fmt.Sprintf("SELECT day, drought, optimal_weather, rainy FROM forecasts WHERE day=%d", day)
 	rows, err := db.Query(query)
@@ -78,7 +78,7 @@ func calculate10Years(){
 	dayFractionCount := 1 //This is set to seconds, but it could be any fraction qty
 
 	//Connect to database
-	db := Utils.GetConnection("root", "glamit10", "127.0.0.1", "3306", "planets")
+	db := Utils.GetConnection("root", "", "127.0.0.1", "3306", "planets")
 
 	var ss Models.SolarSystem
 	ss.Initialize(dayFractionCount, false)
